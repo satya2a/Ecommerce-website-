@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopEase{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="site-header">
+    <div class="container nav">
+        <a class="brand" href="{% url 'home' %}">ShopEase</a>
+
+        <form class="search" action="{% url 'home' %}" method="get">
+            <input name="q" value="{{ query|default:'' }}" placeholder="Search products...">
+            <button type="submit">Search</button>
+        </form>
+
+        <nav class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'cart' %}">Cart <span class="cart-badge">{{ cart_count }}</span></a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'orders' %}">Orders</a>
+                <span class="welcome">Hi, {{ user.username }}</span>
+                <form action="{% url 'logout' %}" method="post" class="inline-form">
+                    {% csrf_token %}
+                    <button class="link-button" type="submit">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a class="nav-cta" href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+{% if messages %}
+<div class="container messages">
+    {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="container footer-inner">
+        <div>
+            <div class="brand">ShopEase</div>
+            <p>Simple Django e-commerce project.</p>
+        </div>
+        <p>© 2026 ShopEase</p>
+    </div>
+</footer>
+
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Checkout — ShopEase{% endblock %}
+
+{% block content %}
+<section class="container section">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">FINAL STEP</span>
+            <h1>Checkout</h1>
+        </div>
+    </div>
+
+    <div class="checkout-layout">
+        <div class="form-card">
+            <h2>Shipping information</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<div class="field-error">{{ field.errors|striptags }}</div>{% endif %}
+                    </div>
+                {% endfor %}
+                <button class="btn primary full" type="submit">Place order · ₹{{ total }}</button>
+            </form>
+        </div>
+
+        <aside class="summary">
+            <h2>Your items</h2>
+            {% for item in items %}
+                <div class="mini-item">
+                    <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                    <strong>₹{{ item.subtotal }}</strong>
+                </div>
+            {% endfor %}
+            <hr>
+            <div class="summary-row total"><span>Total</span><strong>₹{{ total }}</strong></div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

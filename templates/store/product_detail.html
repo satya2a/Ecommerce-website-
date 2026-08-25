@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — ShopEase{% endblock %}
+
+{% block content %}
+<section class="container detail-section">
+    <div class="detail-image">
+        {% if product.image_url %}
+            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+        {% else %}
+            <div class="image-placeholder large">🛍️</div>
+        {% endif %}
+    </div>
+    <div class="detail-content">
+        <span class="category">{{ product.category }}</span>
+        <h1>{{ product.name }}</h1>
+        <div class="detail-price">₹{{ product.price }}</div>
+        <p>{{ product.description }}</p>
+        <div class="stock">● {% if product.in_stock %}{{ product.stock }} available{% else %}Out of stock{% endif %}</div>
+
+        {% if product.in_stock %}
+        <form action="{% url 'add_to_cart' product.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="cart">
+            <button class="btn primary large-btn" type="submit">Add to cart</button>
+        </form>
+        {% endif %}
+        <a class="back-link" href="{% url 'home' %}">← Back to products</a>
+    </div>
+</section>
+{% endblock %}

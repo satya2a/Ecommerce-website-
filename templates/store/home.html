@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}ShopEase — Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-inner">
+        <div>
+            <span class="eyebrow">WELCOME TO SHOPEASE</span>
+            <h1>Everything you need, <span>in one place.</span></h1>
+            <p>Browse quality products, add your favorites to the cart and place your order in a few simple steps.</p>
+            <a class="btn primary" href="#products">Shop now →</a>
+        </div>
+        <div class="hero-card">
+            <div class="hero-icon">🛍️</div>
+            <strong>Easy shopping</strong>
+            <span>Fast • Simple • Secure</span>
+        </div>
+    </div>
+</section>
+
+<section class="container section" id="products">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">OUR COLLECTION</span>
+            <h2>Products</h2>
+        </div>
+        <div class="filters">
+            <a class="{% if not selected_category %}active{% endif %}" href="{% url 'home' %}">All</a>
+            {% for category in categories %}
+                <a class="{% if selected_category == category %}active{% endif %}" href="?category={{ category }}">{{ category }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="product-grid">
+        {% for product in products %}
+        <article class="product-card">
+            <a href="{% url 'product_detail' product.slug %}" class="product-image-wrap">
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                    <div class="image-placeholder">🛍️</div>
+                {% endif %}
+                {% if product.featured %}<span class="featured">Featured</span>{% endif %}
+            </a>
+            <div class="product-info">
+                <span class="category">{{ product.category }}</span>
+                <h3><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></h3>
+                <p class="description">{{ product.description|truncatechars:90 }}</p>
+                <div class="product-bottom">
+                    <strong class="price">₹{{ product.price }}</strong>
+                    {% if product.in_stock %}
+                    <form action="{% url 'add_to_cart' product.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="cart">
+                        <button class="btn small" type="submit">Add to cart</button>
+                    </form>
+                    {% else %}
+                        <span class="out-stock">Out of stock</span>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+        {% empty %}
+            <div class="empty-state">
+                <h3>No products found</h3>
+                <p>Try another search or category.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
